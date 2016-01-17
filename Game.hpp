@@ -11,23 +11,32 @@
 
 #include "Board.hpp"
 #include "Food.hpp"
-#include "Snake.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <chrono>
 #include <iostream>
 
+class Snake;
+
 class Game {
     sf::RenderWindow window;
     Board board;
     Food food;
-    Snake snake;
+    Snake* snake;
+    int score = 0;
+    sf::Text scoreText;
+    sf::Font font;
     
     void update();
     void render();
+    void positionScore();
 public:
-    Game();
+    Game(std::string runPath);
+    ~Game();
     void run();
+    void setScore(int);
+    void addOneToScore();
+    int getScore();
 };
 
 #endif /* Game_hpp */

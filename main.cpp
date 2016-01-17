@@ -10,7 +10,7 @@
 #include <SFML/Graphics.hpp>
 
 int main(int argc, const char * argv[]) {
-    Game game;
+    Game game(argv[0]);
     game.run();
     
     return 0;

@@ -7,6 +7,7 @@
 //
 
 #include "Snake.hpp"
+#include "Game.hpp"
 
 int square(int value) {
     return value * value;
@@ -16,14 +17,14 @@ Snake::Snake(int thickness_, int speed_, sf::Color color_, Food& food_): thickne
     const int x = Board::boardSize / 2 - thickness / 2;
     const int y = Board::boardSize / 2 - thickness / 2;
     Block firstBlock(x, y, thickness, direction, color);
-    firstBlock.getShape().setSize(sf::Vector2f(thickness, 100));
+    firstBlock.getShape().setSize(sf::Vector2f(thickness, 3 * thickness));
     
     blocks.push_back(firstBlock);
 }
 
-bool Snake::move(Direction newDirection) {
+bool Snake::move(Direction newDirection, Game& game) {
     if (newDirection == direction) {
-        return move();
+        return move(game);
     }
     
     const sf::RectangleShape firstShape = blocks[blocks.size() - 1].getShape();
@@ -55,17 +56,17 @@ bool Snake::move(Direction newDirection) {
         x = firstShape.getPosition().x + firstShape.getSize().x - thickness;
         y = firstShape.getPosition().y + thickness;
     } else {
-        return move();
+        return move(game);
     }
     
     Block block = Block(x, y, thickness, newDirection, color);
     blocks.push_back(block);
     
     direction = newDirection;
-    return move();
+    return move(game);
 }
 
-bool Snake::move() {
+bool Snake::move(Game& game) {
     blocks[blocks.size() - 1].moveFirst(speed);
     Direction nextDirection;
     if (blocks.size() < 2) {
@@ -73,9 +74,14 @@ bool Snake::move() {
     } else {
         nextDirection = blocks[1].getDirection();
     }
-    if (!blocks[0].moveLast(foodCollision(), nextDirection, speed)) {
+    
+    bool colidedWithFood = foodCollision();
+    
+    if (!blocks[0].moveLast(colidedWithFood, nextDirection, speed)) {
         blocks.erase(blocks.begin());
     }
+    
+    if (colidedWithFood) game.addOneToScore();
     
     return !(selfCollision() || borderCollision());
 }

@@ -17,6 +17,8 @@
 #include <stdlib.h>
 #include <vector>
 
+class Game;
+
 class Snake {
     std::vector<Block> blocks; // Last block is the head.
     int thickness;
@@ -30,8 +32,8 @@ class Snake {
     bool borderCollision();
 public:
     Snake(int thickness, int speed, sf::Color, Food&);
-    bool move(Direction);
-    bool move();
+    bool move(Direction, Game&);
+    bool move(Game&);
     void render(sf::RenderWindow&);
     void setSpeed(int);
 };
