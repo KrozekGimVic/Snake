@@ -10,6 +10,7 @@
 #define Board_hpp
 
 #include <SFML/Graphics.hpp>
+#include <vector>
 
 class Board {
     sf::RectangleShape top, bottom, left, right;

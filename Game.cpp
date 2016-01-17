@@ -76,7 +76,7 @@ void Game::update() {
     
     if (!snakeMoved) {
         std::cout << "You lose." << std::endl;
-        exit(0);
+        //exit(0);
         snake->setSpeed(0);
     } else {
         snake->setSpeed(score / 5 + 2);

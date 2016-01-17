@@ -13,6 +13,24 @@ int square(int value) {
     return value * value;
 }
 
+bool intersects(int min_x_1, int max_x_1, int min_y_1, int max_y_1, int min_x_2, int max_x_2, int min_y_2, int max_y_2) {
+    if (((min_x_2 >= min_x_1 && min_x_2 <= max_x_1) || (max_x_2 >= min_x_1 && max_x_2 <= max_x_1)) &&
+        ((min_y_2 >= min_y_1 && min_y_2 <= max_y_1) || (max_y_2 >= min_y_1 && max_y_2 <= max_y_1))) {
+        return true;
+    }
+    
+    return false;
+}
+
+bool intersectsSelf(int min_x_1, int max_x_1, int min_y_1, int max_y_1, int min_x_2, int max_x_2, int min_y_2, int max_y_2) {
+    if (((min_x_2 > min_x_1 && min_x_2 < max_x_1) || (max_x_2 > min_x_1 && max_x_2 < max_x_1)) &&
+        ((min_y_2 > min_y_1 && min_y_2 < max_y_1) || (max_y_2 > min_y_1 && max_y_2 < max_y_1))) {
+        return true;
+    }
+    
+    return false;
+}
+
 Snake::Snake(int thickness_, int speed_, sf::Color color_, Food& food_): thickness(thickness_), color(color_), food(food_), speed(speed_) {
     const int x = Board::boardSize / 2 - thickness / 2;
     const int y = Board::boardSize / 2 - thickness / 2;
@@ -144,69 +162,21 @@ bool Snake::foodCollision() {
 }
 
 bool Snake::selfCollision() {
-    sf::RectangleShape headShape = blocks[blocks.size() - 1].getShape();
-    
-    if (direction == Direction::Up) {
-        int x_min_1 = headShape.getPosition().x;
-        int x_max_1 = x_min_1 + headShape.getSize().x;
-        int y = headShape.getPosition().y;
+    for (int i = 0; i < blocks.size(); ++i) {
+        sf::RectangleShape shape1 = blocks[i].getShape();
+        int min_x_1 = shape1.getPosition().x;
+        int max_x_1 = min_x_1 + shape1.getSize().x;
+        int min_y_1 = shape1.getPosition().y;
+        int max_y_1 = min_y_1 + shape1.getSize().y;
         
-        for (Block block : blocks) {
-            sf::RectangleShape shape = block.getShape();
-            int x_min_2 = shape.getPosition().x;
-            int x_max_2 = x_min_2 + shape.getSize().x;
-            int y_min_2 = shape.getPosition().y;
-            int y_max_2 = y_min_2 + shape.getSize().y;
+        for (int j = i + 1; j < blocks.size(); ++j) {
+            sf::RectangleShape shape2 = blocks[j].getShape();
+            int min_x_2 = shape2.getPosition().x;
+            int max_x_2 = min_x_2 + shape2.getSize().x;
+            int min_y_2 = shape2.getPosition().y;
+            int max_y_2 = min_y_2 + shape2.getSize().y;
             
-            if ((y > y_min_2 && y < y_max_2) && ((x_min_1 > x_min_2 && x_min_1 < x_max_2) ||(x_max_1 > x_min_2 && x_max_1 < x_max_2))) {
-                return true;
-            }
-        }
-    } else if (direction == Direction::Down) {
-        int x_min_1 = headShape.getPosition().x;
-        int x_max_1 = x_min_1 + headShape.getSize().x;
-        int y = headShape.getPosition().y + headShape.getSize().y;
-        
-        for (Block block : blocks) {
-            sf::RectangleShape shape = block.getShape();
-            int x_min_2 = shape.getPosition().x;
-            int x_max_2 = x_min_2 + shape.getSize().x;
-            int y_min_2 = shape.getPosition().y;
-            int y_max_2 = y_min_2 + shape.getSize().y;
-            
-            if ((y > y_min_2 && y < y_max_2) && ((x_min_1 > x_min_2 && x_min_1 < x_max_2) ||(x_max_1 > x_min_2 && x_max_1 < x_max_2))) {
-                return true;
-            }
-        }
-    } else if (direction == Direction::Left) {
-        int x = headShape.getPosition().x;
-        int y_min_1 = headShape.getPosition().y;
-        int y_max_1 = y_min_1 + headShape.getSize().y;
-        
-        for (Block block : blocks) {
-            sf::RectangleShape shape = block.getShape();
-            int x_min_2 = shape.getPosition().x;
-            int x_max_2 = x_min_2 + shape.getSize().x;
-            int y_min_2 = shape.getPosition().y;
-            int y_max_2 = y_min_2 + shape.getSize().y;
-            
-            if ((x > x_min_2 && x < x_max_2) && ((y_min_1 > y_min_2 && y_min_1 < y_max_2) || (y_max_1 > y_min_2 && y_max_1 < y_max_2))) {
-                return true;
-            }
-        }
-    } else {
-        int x = headShape.getPosition().x + headShape.getSize().x;
-        int y_min_1 = headShape.getPosition().y;
-        int y_max_1 = y_min_1 + headShape.getSize().y;
-        
-        for (Block block : blocks) {
-            sf::RectangleShape shape = block.getShape();
-            int x_min_2 = shape.getPosition().x;
-            int x_max_2 = x_min_2 + shape.getSize().x;
-            int y_min_2 = shape.getPosition().y;
-            int y_max_2 = y_min_2 + shape.getSize().y;
-            
-            if ((x > x_min_2 && x < x_max_2) && ((y_min_1 > y_min_2 && y_min_1 < y_max_2) || (y_max_1 > y_min_2 && y_max_1 < y_max_2))) {
+            if (intersectsSelf(min_x_1, max_x_1, min_y_1, max_y_1, min_x_2, max_x_2, min_y_2, max_y_2)) {
                 return true;
             }
         }
@@ -216,29 +186,39 @@ bool Snake::selfCollision() {
 }
 
 bool Snake::borderCollision() {
-    sf::RectangleShape headShape = blocks[blocks.size() - 1].getShape();
-    
-    switch (direction) {
-        case Direction::Up:
-            if (headShape.getPosition().y <= Board::borderWidth) {
-                return true;
-            }
-            break;
-        case Direction::Down:
-            if (headShape.getPosition().y + headShape.getSize().y >= Board::boardSize - Board::borderWidth) {
-                return true;
-            }
-            break;
-        case Direction::Left:
-            if (headShape.getPosition().x <= Board::borderWidth) {
-                return true;
-            }
-            break;
-        case Direction::Right:
-            if (headShape.getPosition().x + headShape.getSize().x >= Board::boardSize - Board::borderWidth) {
-                return true;
-            }
-            break;
+    for (Block block : blocks) {
+        sf::RectangleShape shape = block.getShape();
+        int x_min_2 = shape.getPosition().x;
+        int x_max_2 = x_min_2 + shape.getSize().x;
+        int y_min_2 = shape.getPosition().y;
+        int y_max_2 = y_min_2 + shape.getSize().y;
+        
+        int top_min_x = 0;
+        int top_max_x = Board::boardSize;
+        int top_min_y = 0;
+        int top_max_y = Board::borderWidth;
+        
+        int bottom_min_x = top_min_x;
+        int bottom_max_x = top_max_x;
+        int bottom_min_y = Board::boardSize - Board::borderWidth;
+        int bottom_max_y = Board::boardSize;
+        
+        int left_min_x = 0;
+        int left_max_x = Board::borderWidth;
+        int left_min_y = Board::borderWidth;
+        int left_max_y = Board::boardSize - 2 * Board::borderWidth;
+        
+        int rigth_min_x = Board::boardSize - Board::borderWidth;
+        int rigth_max_x = Board::boardSize;
+        int right_min_y = left_min_y;
+        int right_max_y = left_max_y;
+        
+        if (intersects(top_min_x, top_max_x, top_min_y, top_max_y, x_min_2, x_max_2, y_min_2, y_max_2) ||
+            intersects(bottom_min_x, bottom_max_x, bottom_min_y, bottom_max_y, x_min_2, x_max_2, y_min_2, y_max_2) ||
+            intersects(left_min_x, left_max_x, left_min_y, left_max_y, x_min_2, x_max_2, y_min_2, y_max_2) ||
+            intersects(rigth_min_x, rigth_max_x, right_min_y, right_max_y, x_min_2, x_max_2, y_min_2, y_max_2)) {
+            return true;
+        }
     }
     
     return false;
