@@ -15,4 +15,4 @@ target_link_libraries(Snake sfml-graphics)
 target_link_libraries(Snake sfml-window)
 target_link_libraries(Snake sfml-system)
 
-configure_file(res/Font.ttf ${CMAKE_SOURCE_DIR}/bin/res/Font.ttf)
+configure_file(res/Font.ttf ${CMAKE_SOURCE_DIR}/bin/res/Font.ttf COPYONLY)
