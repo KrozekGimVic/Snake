@@ -9,7 +9,7 @@
 #include "Game.hpp"
 #include "Snake.hpp"
 
-Game::Game(std::string runPath): board(sf::Color::Red), food(sf::Color::Blue, 15) {
+Game::Game(std::string path_): board(sf::Color::Red), food(sf::Color::Blue, 15) {
     snake = new Snake(20, 2, sf::Color::Green, food);
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
@@ -17,7 +17,13 @@ Game::Game(std::string runPath): board(sf::Color::Red), food(sf::Color::Blue, 15
     window.setVerticalSyncEnabled(true);
     window.setFramerateLimit(60);
 
-    font.loadFromFile("Font.ttf");
+    for (unsigned long i = path_.size() - 1; i > 0; --i) {
+        if (path_[i] == '/') break;
+        path_.erase(i, 1);
+    }
+    path = path_;
+
+    font.loadFromFile(path + "res/Font.ttf");
     scoreText = sf::Text("Score: " + std::to_string(score), font, 40);
     scoreText.setColor(sf::Color::White);
     positionScore();
@@ -75,8 +81,6 @@ void Game::update() {
     }
     
     if (!snakeMoved) {
-        std::cout << "You lose." << std::endl;
-        //exit(0);
         snake->setSpeed(0);
     } else {
         snake->setSpeed(score / 5 + 2);

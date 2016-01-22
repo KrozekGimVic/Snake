@@ -26,12 +26,13 @@ class Game {
     int score = 0;
     sf::Text scoreText;
     sf::Font font;
+    std::string path;
     
     void update();
     void render();
     void positionScore();
 public:
-    Game(std::string runPath);
+    Game(std::string path_);
     ~Game();
     void run();
     void setScore(int);
