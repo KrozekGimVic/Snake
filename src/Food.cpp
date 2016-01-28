@@ -10,15 +10,16 @@
 
 Food::Food(sf::Color color_, int size): color(color_) {
     shape.setRadius(size);
-    int x = rand() % (Board::boardSize - 2 * Board::borderWidth - 2 * size) + Board::borderWidth;
-    int y = rand() % (Board::boardSize - 2 * Board::borderWidth - 2 * size) + Board::borderWidth;
+
+    int x = std::rand() % (Board::boardSize - 2 * Board::borderWidth - 2 * size) + Board::borderWidth;
+    int y = std::rand() % (Board::boardSize - 2 * Board::borderWidth - 2 * size) + Board::borderWidth;
     shape.setPosition(x, y);
     shape.setFillColor(color);
 }
 
 void Food::changePosition() {
-    int x = rand() % (Board::boardSize - 2 * Board::borderWidth - 2 * static_cast<int>(shape.getRadius())) + Board::borderWidth;
-    int y = rand() % (Board::boardSize - 2 * Board::borderWidth - 2 * static_cast<int>(shape.getRadius())) + Board::borderWidth;
+    int x = std::rand() % (Board::boardSize - 2 * Board::borderWidth - 2 * static_cast<int>(shape.getRadius())) + Board::borderWidth;
+    int y = std::rand() % (Board::boardSize - 2 * Board::borderWidth - 2 * static_cast<int>(shape.getRadius())) + Board::borderWidth;
     shape.setPosition(x, y);
 }
 

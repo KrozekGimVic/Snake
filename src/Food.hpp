@@ -10,7 +10,7 @@
 #define Food_hpp
 
 #include "Board.hpp"
-#include <stdlib.h>
+#include <cstdlib>
 #include <SFML/Graphics.hpp>
 
 class Food {
